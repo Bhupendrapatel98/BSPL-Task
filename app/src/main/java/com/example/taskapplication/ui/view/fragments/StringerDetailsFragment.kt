@@ -23,6 +23,7 @@ import com.example.taskapplication.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.databinding.DataBindingUtil
 import android.content.Intent
+import android.util.Log
 import androidx.core.app.ActivityCompat.recreate
 
 @AndroidEntryPoint
@@ -31,7 +32,7 @@ class StringerDetailsFragment : Fragment() {
     private lateinit var view1: View
     private val stringerViewModel: StringerViewModel by viewModels()
     private lateinit var binding: FragmentStringerDetailsBinding
-    private lateinit var stringerAdapter:StringerAdapter
+    private lateinit var stringerAdapter: StringerAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,7 +54,7 @@ class StringerDetailsFragment : Fragment() {
             when (it) {
 
                 is Resource.Loading -> {
-                   // Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
+                    // Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
                 }
                 is Resource.Failed -> {
                     Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
@@ -61,13 +62,14 @@ class StringerDetailsFragment : Fragment() {
                 is Resource.Success -> {
                     binding.list = it.data
                     binding.recyclerView.layoutManager = LinearLayoutManager(context)
-                     stringerAdapter = StringerAdapter(it.data, object : OnItemClickListener {
-                        override fun onItemClick(stringerId:Int,position: Int,type:String) {
-                            if (type == "Delete"){
+                    stringerAdapter = StringerAdapter(it.data, object : OnItemClickListener {
+                        override fun onItemClick(stringerId: Int, position: Int, type: String) {
+                            if (type == "Delete") {
                                 stringerViewModel.deleteStringer(stringerId)
-                                Toast.makeText(context, "Deleted Successfully", Toast.LENGTH_SHORT).show()
-                            }else{
-                                showDialog(it.data,position,stringerId)
+                                Toast.makeText(context, "Deleted Successfully", Toast.LENGTH_SHORT)
+                                    .show()
+                            } else {
+                                showDialog(it.data, position, stringerId)
                             }
                         }
                     })
@@ -82,7 +84,11 @@ class StringerDetailsFragment : Fragment() {
         return binding.root
     }
 
-    private fun showDialog(listItem: MutableList<StringerListItem>,position: Int,stringerId:Int) {
+    private fun showDialog(
+        listItem: MutableList<StringerListItem>,
+        position: Int,
+        stringerId: Int
+    ) {
         val dialog = context?.let { Dialog(it) }
         dialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog?.setCancelable(true)
@@ -92,24 +98,17 @@ class StringerDetailsFragment : Fragment() {
         )
         dialog?.setContentView(binding1.root)
 
-        binding1.editTextTextPersonName.setText(listItem[position].Name)
-        binding1.editTextTextPersonName2.setText(listItem[position].Age.toString())
-        binding1.editTextTextPersonName3.setText(listItem[position].Address)
-        binding1.editTextTextPersonName5.setText(listItem[position].StartTiming)
-        binding1.editTextTextPersonName4.setText(listItem[position].PhoneNumber)
-        binding1.editTextTextPersonName6.setText(listItem[position].Password)
-        binding1.editTextTextPersonName7.setText(listItem[position].CloseTiming)
+        stringerViewModel.name.value = listItem[position].Name
+        stringerViewModel.age.value = listItem[position].Age.toString()
+        stringerViewModel.address.value = listItem[position].Address
+        stringerViewModel.phoneNumber.value = listItem[position].PhoneNumber
+        stringerViewModel.startTime.value = listItem[position].StartTiming
+        stringerViewModel.password.value = listItem[position].Password
+        stringerViewModel.closeTime.value = listItem[position].CloseTiming
+        stringerViewModel.stringerID.value = stringerId.toString()
+        binding1.viewModel = stringerViewModel
 
         binding1.button.setOnClickListener {
-            stringerViewModel.name.value = binding1.editTextTextPersonName.text.toString()
-            stringerViewModel.age.value = binding1.editTextTextPersonName2.text.toString()
-            stringerViewModel.address.value = binding1.editTextTextPersonName3.text.toString()
-            stringerViewModel.phoneNumber.value = binding1.editTextTextPersonName4.text.toString()
-            stringerViewModel.startTime.value = binding1.editTextTextPersonName5.text.toString()
-            stringerViewModel.password.value = binding1.editTextTextPersonName6.text.toString()
-            stringerViewModel.closeTime.value = binding1.editTextTextPersonName7.text.toString()
-            stringerViewModel.stringerID.value = stringerId.toString()
-
             stringerViewModel.upDateData()
             activity?.let { it1 -> recreate(it1) }
             dialog?.dismiss()

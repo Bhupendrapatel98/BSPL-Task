@@ -1,12 +1,8 @@
 package com.example.taskapplication.ui.view.adapter
 
-import android.app.Dialog
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import androidx.annotation.NonNull
-import com.example.taskapplication.R
 import com.example.taskapplication.data.model.StringerListItem
 import com.example.taskapplication.databinding.StringerItemBinding
 
