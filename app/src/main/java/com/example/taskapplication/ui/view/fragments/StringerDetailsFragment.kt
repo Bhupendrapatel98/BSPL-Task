@@ -33,6 +33,7 @@ class StringerDetailsFragment : Fragment() {
     private val stringerViewModel: StringerViewModel by viewModels()
     private lateinit var binding: FragmentStringerDetailsBinding
     private lateinit var stringerAdapter: StringerAdapter
+    private lateinit var stringerListItem: MutableList<StringerListItem>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,6 +62,10 @@ class StringerDetailsFragment : Fragment() {
                 }
                 is Resource.Success -> {
                     binding.list = it.data
+
+                    stringerListItem = mutableListOf()
+                    stringerListItem = it.data
+
                     binding.recyclerView.layoutManager = LinearLayoutManager(context)
                     stringerAdapter = StringerAdapter(it.data, object : OnItemClickListener {
                         override fun onItemClick(stringerId: Int, position: Int, type: String) {
@@ -74,7 +79,6 @@ class StringerDetailsFragment : Fragment() {
                         }
                     })
                     binding.recyclerView.adapter = stringerAdapter
-                    stringerAdapter.notifyDataSetChanged()
                     //Toast.makeText(context, it.data.get(0).Address, Toast.LENGTH_SHORT).show()
                 }
             }
@@ -109,8 +113,25 @@ class StringerDetailsFragment : Fragment() {
         binding1.viewModel = stringerViewModel
 
         binding1.button.setOnClickListener {
+
+            var s = StringerListItem(
+                stringerViewModel.address.value.toString(),
+                Integer.parseInt(stringerViewModel.age.value.toString()),
+                stringerViewModel.closeTime.value.toString(),
+                stringerViewModel.name.value.toString(),
+                stringerViewModel.password.value.toString(),
+                stringerViewModel.phoneNumber.value.toString(),
+                stringerViewModel.startTime.value.toString(),
+                Integer.parseInt(stringerViewModel.stringerID.value.toString())
+            )
+
+            stringerListItem[position] = s
+            stringerAdapter.notifyItemChanged(position) //update
+
+            //stringerListItem.add(stringerListItem.size-1,s)
+            //stringerAdapter.notifyItemInserted(stringerListItem.size-1) //addition
+
             stringerViewModel.upDateData()
-            activity?.let { it1 -> recreate(it1) }
             dialog?.dismiss()
             Toast.makeText(context, "Updated Successfully", Toast.LENGTH_SHORT).show()
         }
@@ -120,6 +141,5 @@ class StringerDetailsFragment : Fragment() {
         window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 
     }
-
 
 }

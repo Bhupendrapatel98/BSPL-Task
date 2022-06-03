@@ -34,10 +34,11 @@ class StringerAdapter(
         fun bind(item: StringerListItem) {
             binding.item = item
 
+
             binding.delete.setOnClickListener {
                 onItemClickListener.onItemClick(item.StringerID,adapterPosition,"Delete")
-                items.removeAt(adapterPosition)
-                notifyDataSetChanged()
+                items.remove(items[adapterPosition])
+                notifyItemRemoved(adapterPosition)
             }
 
             binding.edit.setOnClickListener{
