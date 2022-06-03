@@ -82,7 +82,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="23dp"
                     android:layout_marginTop="7dp"
-                    android:text="@{`Name - `+item.phoneNumber}"
+                    android:text="@{`Phone - `+item.phoneNumber}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/address" />
 
